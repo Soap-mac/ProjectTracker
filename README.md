@@ -1,73 +1,60 @@
-# React + TypeScript + Vite
+# Project Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A fully functional multi-view project management tool built with React + TypeScript.
 
-Currently, two official plugins are available:
+## Live Demo
+(https://project-tracker-psi-five.vercel.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Setup
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Features
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Kanban board with 4 columns
+- List view with sorting and inline status updates
+- Timeline / Gantt view for current month
+- Custom drag and drop (no libraries)
+- Virtual scrolling (handles 500+ tasks smoothly)
+- Live collaboration indicators (WebSocket simulation)
+- Filters with URL sync (shareable + bookmarkable)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Tech Stack
+
+- React + TypeScript
+- Tailwind CSS
+- React Context + useReducer
+- react-router-dom (URL sync)
+- Vite
+
+## State Management
+
+I used React Context + useReducer over Zustand because the app state is straightforward — a single global store with predictable actions. useReducer gives full control over state transitions without adding a dependency, and the AppAction union type makes every possible state change explicit and type-safe.
+
+## Virtual Scrolling
+
+Implemented from scratch without any library. The approach:
+- Fixed row height (56px for list, 40px for timeline)
+- On scroll, calculate startIndex = scrollTop / ROW_HEIGHT
+- Only render rows from startIndex to startIndex + visibleCount
+- Rows are absolutely positioned inside a container whose height equals totalRows * ROW_HEIGHT
+- Keeps the DOM lean — only ~20 rows rendered at any time regardless of dataset size
+- Used ResizeObserver to track container height dynamically
+
+## Drag and Drop
+
+Built using native Pointer Events API — no react-beautiful-dnd, no dnd-kit.
+
+- pointerdown captures exact click offset within the card
+- Window-level pointermove updates ghost position via direct DOM manipulation — no React state, no re-renders, smooth 60fps
+- Column highlight on hover done via direct classList — avoids re-renders at column borders
+- pointerup checks which column cursor is over and dispatches MOVE_TASK
+- Dropped outside valid column — card snaps back automatically
+
+The hardest part was keeping layout shift zero while dragging. Solved by keeping the original card in place with reduced opacity rather than removing it from DOM.
+
+## Explanation
+
+The hardest UI problem was the drag placeholder without layout shift. When a card is picked up, removing it from the DOM causes all cards below to shift up instantly which looks jarring. Keeping it in place with opacity 0.3 solved this cleanly. One thing I'd refactor with more time is the collaboration simulation — currently it re-initialises whenever tasks.length changes. I'd use a stable ref for the task id pool so the interval never needs to restart.
