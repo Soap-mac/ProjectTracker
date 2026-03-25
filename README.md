@@ -14,13 +14,13 @@ A fully functional multi-view project management tool built with React + TypeScr
 ## 📸 Preview
 
 <p align="center">
-  <img src="assets/Kaban.png" width="700"/>
+  <img src="src/assets/Kaban.png" width="700"/>
 </p>
 <p align="center">
-  <img src="assets/ListView.png" width="700"/>
+  <img src="src/assets/ListView.png" width="700"/>
 </p>
 <p align="center">
-  <img src="assets/timeLine.png" width="700"/>
+  <img src="src/assets/timeLine.png" width="700"/>
 </p>
 
 ## Setup
