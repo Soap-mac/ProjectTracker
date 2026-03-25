@@ -11,6 +11,18 @@ A fully functional multi-view project management tool built with React + TypeScr
   <img src="lighthouse.png" width="700"/>
 </p>
 
+## 📸 Preview
+
+<p align="center">
+  <img src="assets/Kaban.png" width="700"/>
+</p>
+<p align="center">
+  <img src="assets/ListView.png" width="700"/>
+</p>
+<p align="center">
+  <img src="assets/timeLine.png" width="700"/>
+</p>
+
 ## Setup
 ```bash
 npm install
