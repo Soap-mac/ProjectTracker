@@ -5,6 +5,12 @@ A fully functional multi-view project management tool built with React + TypeScr
 ## Live Demo
 (https://project-tracker-psi-five.vercel.app/)
 
+## LightHouse Performance
+
+<p align="center">
+  <img src="lighthouse.png" width="700"/>
+</p>
+
 ## Setup
 ```bash
 npm install
